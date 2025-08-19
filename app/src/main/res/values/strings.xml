@@ -4,4 +4,6 @@
     <string name="clickme">Click Me</string>
     <string name="hello">Hello world!</string>
     <string name="doubleback">Press again to exit!</string>
+    <string name="permission_granted">Permission Granted</string>
+    <string name="permission_denied">Permission Denied</string>
 </resources>
