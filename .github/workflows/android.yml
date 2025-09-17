@@ -8,8 +8,6 @@ on:
       - 'gradle/**'
       - 'build.gradle'
       - 'gradle.properties'
-      - 'gradlew'
-      - 'gradlew.bat'
       - 'public-stable-ids.txt'
       - 'settings.gradle'
     branches-ignore:
@@ -18,10 +16,7 @@ on:
 
 jobs:
   build:
-    name: Build Release APK
     runs-on: ubuntu-latest
-    outputs:
-      short_sha: ${{ steps.set_sha.outputs.short_sha }}
     steps:
       - uses: actions/checkout@v4
 
@@ -31,30 +26,23 @@ jobs:
           java-version: 21
           distribution: temurin
 
-      - name: Cache Gradle
-        uses: actions/cache@v4
+      - name: Set up Gradle 8.14.3 (system)
+        uses: gradle/actions/setup-gradle@v3
         with:
-          path: ~/.gradle
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+          gradle-version: 8.14.3
 
       - name: Build Release APK
         run: gradle assembleRelease --build-cache
 
-      - name: Set short SHA
-        id: set_sha
-        run: echo "short_sha=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
-
       - name: Rename APK with commit hash
         run: |
+          short_sha=$(echo "${GITHUB_SHA}" | cut -c1-7)
           mv app/build/outputs/apk/release/app-release.apk \
-             app/build/outputs/apk/release/app-release-${{ steps.set_sha.outputs.short_sha }}.apk || exit 1
+             app/build/outputs/apk/release/app-release-${short_sha}.apk
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: apk-release-${{ steps.set_sha.outputs.short_sha }}
-          path: app/build/outputs/apk/release/app-release-${{ steps.set_sha.outputs.short_sha }}.apk
+          name: apk-release
+          path: app/build/outputs/apk/release/app-release-*.apk
           if-no-files-found: error
