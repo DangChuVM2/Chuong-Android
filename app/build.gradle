@@ -16,7 +16,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("chuong-key.keystore")
+            storeFile file("../chuong-key.keystore")
             storePassword "chuong"
             keyAlias "chuong"
             keyPassword "chuong"
