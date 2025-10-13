@@ -12,15 +12,28 @@ android {
         targetSdk 36
         versionCode 1
         versionName "1.0"
-
     }
+
+    signingConfigs {
+        release {
+            storeFile file("chuong-key.keystore")
+            storePassword "chuong"
+            keyAlias "chuong"
+            keyPassword "chuong"
+        }
+}
 
     buildTypes {
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.debug
+        }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
